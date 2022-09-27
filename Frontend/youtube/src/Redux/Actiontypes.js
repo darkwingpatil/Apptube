@@ -1,0 +1,5 @@
+export const USER="USER"
+export const ERROR="ERROR"
+export const NAME="NAME"
+export const DATA="DATA"
+export const TOKEN="TOKEN"
