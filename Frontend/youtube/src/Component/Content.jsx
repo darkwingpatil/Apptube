@@ -2,6 +2,9 @@ import React from 'react'
 import styles from "./Comp.module.css"
 import {load} from "../Redux/Action"
 import { useDispatch,useSelector } from 'react-redux'
+import{useNavigate} from "react-router-dom"
+import{Listdata} from "./Listdata"
+import{channelID} from "../Redux/Action"
 
 
 export const Content = () => {
@@ -12,6 +15,7 @@ console.log(state,"hh")
 const[navi,setNavi]=React.useState(0)
 const[tok,setTok]=React.useState(false)
 const loader=React.useRef(null)
+const navigate=useNavigate()
 
 
 
@@ -37,8 +41,8 @@ const handleobserver=(entries)=>{
         {
             val="data"
         }
-        let toks=state.token
-        dispatch(load({val,toks}))
+        let toks=state.nexpag
+        dispatch(load({val,toks,max:25}))
         setTok(true)      
     },[navi])
 
@@ -63,28 +67,13 @@ const handleobserver=(entries)=>{
         {
             state.data.map((el,ind)=>{
                 return(
-                    <div className={styles.box}> 
-                        <img src={el.snippet.thumbnails.high.url}/>
-                        
-                        <div>
-                            <div className={styles.titlelogo}>
-                                <img src={""} height="40" width="40" style={{borderRadius:"20px",marginTop:"4%",marginRight:"5%"}}/>
-                                <div>
-                                 <p style={{fontWeight:"bold"}}>{el.snippet.title}</p>
-                                 <div>
-                                <small className={styles.small}>{el.snippet.channelTitle}</small>
-                                <div className={styles.views}>
-                                 <small className={styles.small}>{el.statistics.viewCount} views</small>
-                                 <small className={styles.small}> • </small>
-                                 <small className={styles.small}>{el.uploaded} ago</small>
-                                </div>
+                    <div className={styles.box}  onClick={()=>{
 
-                            </div>
-                                </div>
-                                
-                            </div>
-
-                        </div>
+                        dispatch(channelID(el.snippet.channelId))
+                        navigate(`/${el.id}`)
+                        console.log(el.id,"for video ref")
+                    }}> 
+                    <Listdata {...el}/>
                         
                     </div>
                 )

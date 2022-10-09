@@ -1,4 +1,4 @@
-import {USER,ERROR,NAME,DATA,TOKEN} from "./Actiontypes"
+import {USER,ERROR,NAME,DATA,TOKEN,REFRESHTOKEN,NEXTPAGE,CHANEELID} from "./Actiontypes"
 
 export const user=(payload)=>{
     return{
@@ -12,7 +12,7 @@ export const error=()=>{
         type:ERROR
     }
 }
-export const name=(payload)=>{
+export const namezz=(payload)=>{
     return{
         type:NAME,
         payload
@@ -24,9 +24,29 @@ export const data11=(payload)=>{
         payload
     }
 }
-export const token=(payload)=>{
+export const tokenzz=(payload)=>{
     return{
         type:TOKEN,
+        payload
+    }
+}
+
+export const channelID=(payload)=>{
+    return{
+        type:CHANEELID,
+        payload
+    }
+}
+
+export const nextpage=(payload)=>{
+    return{
+        type:NEXTPAGE,
+        payload
+    }
+}
+export const refreshtokenzz=(payload)=>{
+    return{
+        type:REFRESHTOKEN,
         payload
     }
 }
@@ -37,13 +57,14 @@ export const load=(data)=>(dispatch)=>{
     fetch(`http://localhost:8080/${data.val}`,{
         method:"GET",
         headers:{
-            "token":data.toks
+            "token":data.toks,
+            "max":data.max
         },
     })
     .then((res)=>res.json())
     .then((data1)=>{
-        console.log(data1,"ss")
+        // console.log(data1,"ss")
         dispatch(data11(data1.outi))
-    dispatch(token(data1.token))})
+    dispatch(nextpage(data1.token))})
     .catch((e)=>dispatch(error()))
 }

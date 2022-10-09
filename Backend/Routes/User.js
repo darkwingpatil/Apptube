@@ -37,10 +37,14 @@ Myuser.get("/google/callback",async(req,res)=>{
     console.log(find,"aa")
     if(find)
     {
-       return res.send(data)
+      //  return res.send(find)
+       let token=jwt.sign({name:data.name,email:data.email,picture:data.picture},"SECREATE123",{expiresIn:"120s"})
+       let token1=jwt.sign({name:data.name,email:data.email,picture:data.picture},"SECREATE123",{expiresIn:"5h"})
+       let add=await user.updateOne({email:data.email},{$set:{"Token":token,"refreshToken":token1}})
+      return res.redirect(`http://127.0.0.1:5173/login/${find._id}`)
     }
 
-    let token=jwt.sign({name:data.name,email:data.email,picture:data.picture},"SECREATE123",{expiresIn:"3h"})
+    let token=jwt.sign({name:data.name,email:data.email,picture:data.picture},"SECREATE123",{expiresIn:"120s"})
     let token1=jwt.sign({name:data.name,email:data.email,picture:data.picture},"SECREATE123",{expiresIn:"5h"})
     let add=new user({
         name:data.name,
@@ -52,10 +56,22 @@ Myuser.get("/google/callback",async(req,res)=>{
 
     await add.save()
 
-    res.send(data)
+    console.log(add,"dddddddddd")
+
+    res.redirect(`http://127.0.0.1:5173/login/${add._id}`)
+    // res.send(add)
 
     // res.redirect(`http://localhost:3000/afterOuth/${data._id}`)
     // res.redirect(`https://onemgclone.vercel.app/loading/${data._id}`)
   
   })
+
+Myuser.get("/userdata",async(req,res)=>{
+  const{myid}=req.headers;
+  let userdata=await user.findOne({_id:myid})
+
+  console.log(userdata)
+  res.send({name:userdata.name,Token:userdata.Token,refreshToken:userdata.refreshToken})
+
+})
 module.exports=Myuser;

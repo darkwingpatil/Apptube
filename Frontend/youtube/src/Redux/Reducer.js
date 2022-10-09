@@ -1,17 +1,20 @@
-import {USER,ERROR,NAME,DATA,TOKEN} from "./Actiontypes"
+import {USER,ERROR,NAME,DATA,TOKEN,REFRESHTOKEN,NEXTPAGE,CHANEELID} from "./Actiontypes"
 import{Load,Save} from "../Utils/Localstorage"
 const initState={
     token:Load("user")||"",
+    refreshtoken:Load("refuser")||"",
     error:false,
     name:Load("name")||"",
     count:"",
-    data:[]
+    data:[],
+    nexpag:"",
+    chnl:"",
 }
 
 export const Reducer=(state=initState,action)=>{
     switch(action.type)
     {
-        case USER:{
+        case TOKEN:{
             Save("user",action.payload)
             return{
                 ...state,
@@ -33,6 +36,19 @@ export const Reducer=(state=initState,action)=>{
             }
         }
 
+        case CHANEELID:{
+            return{
+                ...state,
+                chnl:action.payload
+            }
+        }
+        case NEXTPAGE:{
+            return{
+                ...state,
+                nexpag:action.payload
+            }
+        }
+
         case DATA:{
             return{
                 ...state,
@@ -40,12 +56,14 @@ export const Reducer=(state=initState,action)=>{
             }
         }
 
-        case TOKEN:{
+        case REFRESHTOKEN:{
+            Save("refuser",action.payload)
             return{
                 ...state,
-                token:action.payload
+                refreshtoken:action.payload
             }
         }
+
 
         default:{
             return state

@@ -1,8 +1,12 @@
 const {Router}=require("express")
 const axios=require("axios")
 const Data=Router()
+const jwt=require("jsonwebtoken")
 const {getTime} =require("../Logic/function")
 const Datas=require("../Mongo/DataStruct")
+const user=require("../Mongo/User")
+
+
 
 
 
@@ -42,17 +46,52 @@ const Datas=require("../Mongo/DataStruct")
 
 //pageToken=${token}
 Data.get("/data",async(req,res)=>{
-        let data=await axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=25&regionCode=IN&key=${process.env.API_KEY}`)
-        let outi=await getTime(data.data)
-        res.send({outi,token:data.data.nextPageToken})
+    try{
+        let{max}=req.headers
+        if(max==undefined)
+        {
+            max=25
+        }
+            let data=await axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=${max}&regionCode=IN&key=${process.env.API_KEY}`)
+            let outi=await getTime(data.data)
+            res.send({outi,token:data.data.nextPageToken})
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+
 })
 
 Data.get("/next",async(req,res)=>{
-    const {token}=req.headers
-    let data=await axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=25&pageToken=${token}&regionCode=IN&key=${process.env.API_KEY}`)
-    let outi=await getTime(data.data)
-    res.send({outi,token:data.data.nextPageToken})
+    try{
+        const {token,max}=req.headers
+
+
+        let data=await axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=${max}&pageToken=${token}&regionCode=IN&key=${process.env.API_KEY}`)
+        let outi=await getTime(data.data)
+        res.send({outi,token:data.data.nextPageToken})
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+   
 })
+
+
+
+Data.get("/title",async(req,res)=>{
+    let data=await axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=UdPisHeGMQM&key=${process.env.API_KEY}`)
+
+    res.send({data})
+})
+
+
+// GET https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=UdPisHeGMQM&key=[YOUR_API_KEY] HTTP/1.1
+
+// Authorization: Bearer [YOUR_ACCESS_TOKEN]
+// Accept: application/json
 
 
 

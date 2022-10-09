@@ -7,15 +7,18 @@ import menu from "../assets/menu.png"
 import{FaVideo} from "react-icons/fa"
 import{FaBell} from "react-icons/fa"
 import { useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 export const TopSection=()=>{
 
     const state=useSelector((state)=>state)
+    const navigate=useNavigate()
+  
     console.log(state)
     return(
         <div className={styles.topsection}> 
             <div className={styles.firstsec}>
              <img className={styles.firstsecimg} src={menu}/>   
-             <img src="https://github.com/darkwingpatil/sudoku/blob/main/you1.png?raw=true" alt="icon"/>
+             <img src="https://github.com/darkwingpatil/sudoku/blob/main/you1.png?raw=true" alt="icon" onClick={()=>navigate("/")}/>
             </div>
             <div className={styles.search}>
                 <input placeholder="Search"/>
@@ -24,9 +27,11 @@ export const TopSection=()=>{
             </div>
             <>
             {
-             (state.token)?
+             (!state.token)?
                 <div>
-                <div className={styles.signin}>
+                <div className={styles.signin} onClick={()=>{
+                    window.location.href="http://localhost:8080/google"
+                }}>
                     <img src={img2}/>
                     <p>SIGN IN</p>
                 </div>
@@ -34,7 +39,7 @@ export const TopSection=()=>{
             <div className={styles.login}>
                 <FaVideo style={{fontSize:"30px"}}/>
                 <FaBell style={{fontSize:"30px"}}/>
-                <div className={styles.circle}>A</div>
+                <div className={styles.circle}>{state.name[0].toLowerCase()}</div>
             </div>
             }
             </>
